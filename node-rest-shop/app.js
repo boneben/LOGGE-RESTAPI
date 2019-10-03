@@ -12,7 +12,7 @@ const userRoutes = require('./api/routes/user');
 
 
 mongoose.connect('mongodb+srv://dbUser:loggeproject123@rest-shop-a182g.mongodb.net/test?retryWrites=true&w=majority',
-{ useNewUrlParser: true, useUnifiedTopology: true })
+{ useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
 //BODY PARSER
 app.use(bodyParser.urlencoded({extended: false}));
