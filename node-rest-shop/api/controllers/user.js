@@ -41,13 +41,15 @@ exports.user_signup = (req, res, next) => {
                     .then(result => {
                         console.log(result);
                         res.status(201).json({
-                            message: 'User created'
+                            message: 'User created',
+                            success: true
                         })
                     })
                     .catch(err => {
                         console.log(err);
                         res.status(500).json({
-                            error: err
+                            error: err,
+                            success: false
                         })
                     })
                 }
@@ -75,8 +77,8 @@ exports.user_login = (req, res, next) => {
             }
             if(result) {
                 const token = jwt.sign({
-                    email: user[0].email,
-                    userId: user[0]._id
+                    userId: user[0]._id,
+                    email: user[0].email
                 }, 
                 "secret",
                 {
@@ -85,7 +87,10 @@ exports.user_login = (req, res, next) => {
                 );
                 return res.status(200).json({
                     message: 'Auth successful',
-                    token: token
+                    success: true,
+                    token: token,
+                    userId: user[0]._id,
+                    email: user[0].email
                 })
             }
             return res.status(401).json({
