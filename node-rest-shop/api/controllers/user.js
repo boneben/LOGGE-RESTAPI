@@ -125,28 +125,63 @@ exports.getUser = (req, res, next) => {
 }
 
 exports.user_update = (req, res, next) => {
-    const id = req.params.userId;
-    const updateOps = {};
-    for(const ops of req.body){
-        updateOps[ops.propName] = ops.value;
-    }
-    User.update({_id: id}, {$set: updateOps})
-    .exec()
-    .then(result => {
-        res.status(200).json({
-            message: 'User updated',
-            request: {
-                type: 'GET',
-                url: "http://localhost:3000/user/" + id
+    if( req.body.password.length > 0 ) {
+        console.log("Password changed ")
+        bcrypt.hash(req.body.password, 10, function(error, hash) {
+            if(error) {
+                return res.status(500).json({
+                    error: error,
+                    message: "Error | failed to encrypt password"
+                })
+            }
+            else {
+                User
+                .updateOne({ _id:req.params.userId },
+                {$set: {
+                    firstName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    email: req.body.email,
+                    password: hash,
+                    billingAddress: req.body.billingAddress,
+                    billingPostalNumber: req.body.billingPostalNumber,
+                    billingCity: req.body.billingCity,
+                    billingCountry: req.body.billingCountry,
+                    shippingAddress: req.body.shippingAddress,
+                    shippingPostalNumber: req.body.shippingPostalNumber,
+                    shippingCity: req.body.shippingCity,
+                    shippingCountry: req.body.shippingCountry
+                }})
+                .then( result => {
+                    res.json({succes: true});
+                })
+                .catch(function(error, affected, resp) {
+                    console.log(error);
+                })
             }
         });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
+    } else {
+        User
+        .updateOne({ _id:req.params.userId },
+        {$set: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            billingAddress: req.body.billingAddress,
+            billingPostalNumber: req.body.billingPostalNumber,
+            billingCity: req.body.billingCity,
+            billingCountry: req.body.billingCountry,
+            shippingAddress: req.body.shippingAddress,
+            shippingPostalNumber: req.body.shippingPostalNumber,
+            shippingCity: req.body.shippingCity,
+            shippingCountry: req.body.shippingCountry
+        }})
+        .then( result => {
+            res.json({succes: true});
         })
-    })
+        .catch(function(error, affected, resp) {
+            console.log(error);
+        })
+    }
 }
 
 exports.user_delete = (req, res, next) => {

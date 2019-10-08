@@ -10,7 +10,7 @@ router.post('/login', UserController.user_login);
 
 router.get('/:userId', UserController.getUser);
 
-router.patch('/:userId', checkAuth, UserController.user_update);
+router.put('/:userId', UserController.user_update);
 
 router.delete('/:userId', checkAuth, UserController.user_delete);
 
